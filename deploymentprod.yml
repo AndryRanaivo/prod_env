@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myapp-prod
+  namespace: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app-prod
+  template:
+    metadata:
+      labels:
+        app: my-app-prod
+    spec:
+      containers:
+      - name: appcontainer
+        image: aranaivo/myphpapp
+        ports:
+        - containerPort: 80
+        env:
+        - name: ENVNAME
+          valueFrom:
+            configMapKeyRef:
+              name: prod-env
+              key: envname
+        - name: APPLOGIN
+          valueFrom:
+            secretKeyRef:
+              name: prodsecret
+              key: username
+        - name: APPPWD
+          valueFrom:
+            secretKeyRef:
+              name: prodsecret
+              key: password
